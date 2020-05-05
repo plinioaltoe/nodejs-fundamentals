@@ -19,6 +19,13 @@ class CreateTransactionService {
       throw Error('Type not accepted');
     }
 
+    const balance = this.transactionsRepository.getBalance();
+    const explodeBalance = type === 'outcome' && balance.total - value < 0;
+
+    if (explodeBalance) {
+      throw Error(`This transaction will explode your balance, don't do it.`);
+    }
+
     const transaction = this.transactionsRepository.create({
       title,
       value,
